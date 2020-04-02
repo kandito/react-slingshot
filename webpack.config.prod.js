@@ -3,6 +3,7 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import LoadablePlugin from '@loadable/webpack-plugin';
 import path from 'path';
 
 const GLOBALS = {
@@ -24,12 +25,19 @@ export default {
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: '/dist/',
     filename: '[name].[contenthash].js'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   },
   plugins: [
     // Tells React to build in prod mode. https://facebook.github.io/react/downloads.html
     new webpack.DefinePlugin(GLOBALS),
+
+    new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }),
 
     // Generate an external css file with a hash in the filename
     new MiniCssExtractPlugin({
